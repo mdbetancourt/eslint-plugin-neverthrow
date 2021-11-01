@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import fs from 'fs';
 import path from 'path';
 import { pluginId } from './plugin-id';
@@ -23,23 +26,21 @@ export type CategoryInfo = {
 export const rules: RuleInfo[] = fs
   .readdirSync(rootDir)
   .sort()
-  .map(
-    (filename): RuleInfo => {
-      const filePath = path.join(rootDir, filename);
-      const name = filename.slice(0, -3);
-      const { meta } = require(filePath);
+  .map((filename): RuleInfo => {
+    const filePath = path.join(rootDir, filename);
+    const name = filename.slice(0, -3);
+    const { meta } = require(filePath);
 
-      return {
-        filePath,
-        id: `${pluginId}/${name}`,
-        name,
-        deprecated: Boolean(meta.deprecated),
-        fixable: Boolean(meta.fixable),
-        replacedBy: [],
-        ...meta.docs,
-      };
-    }
-  );
+    return {
+      filePath,
+      id: `${pluginId}/${name}`,
+      name,
+      deprecated: Boolean(meta.deprecated),
+      fixable: Boolean(meta.fixable),
+      replacedBy: [],
+      ...meta.docs,
+    };
+  });
 
 export const categories: CategoryInfo[] = [
   'Possible Errors',

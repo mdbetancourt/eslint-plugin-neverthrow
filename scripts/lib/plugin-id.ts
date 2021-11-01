@@ -5,7 +5,7 @@ let pluginId = name;
 if (name.startsWith('eslint-plugin-')) {
   pluginId = name.slice('eslint-plugin-'.length);
 } else {
-  const match = name.match(/^(@.+)\/eslint-plugin(?:-(.+))?$/);
+  const match = /^(@.+)\/eslint-plugin(?:-(.+))?$/.exec(name);
 
   if (match) {
     if (match[2]) {
