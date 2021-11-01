@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-neverthrow",
-  "version": "0.1.0",
+  "version": "0.0.0-development",
   "description": "",
   "engines": {
     "node": ">=8.10.0"
@@ -26,7 +26,8 @@
     "test:coverage": "jest --coverage",
     "release": "semantic-release",
     "add-rule": "ts-node scripts/add-rule",
-    "update": "ts-node scripts/update"
+    "update": "ts-node scripts/update",
+    "semantic-release": "semantic-release"
   },
   "peerDependencies": {
     "eslint": ">=5.16.0"
@@ -45,6 +46,7 @@
     "eslint": "^7.23.0",
     "husky": "^6.0.0",
     "jest": "^26.6.3",
+    "semantic-release": "^18.0.0",
     "lint-staged": "^10.5.4",
     "neverthrow": "4.3.0",
     "npm-run-all": "^4.1.5",
@@ -65,7 +67,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mdbetancourt/eslint-plugin-nevethrow"
+    "url": "https://github.com/mdbetancourt/eslint-plugin-nevethrow"
   },
   "keywords": [
     "typescript",
