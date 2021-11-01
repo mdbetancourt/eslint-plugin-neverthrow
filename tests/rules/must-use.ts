@@ -3,7 +3,7 @@ import rule from '../../src/rules/must-use-result';
 import { MessageIds } from '../../src/utils';
 
 function injectResult(name: string, text: string) {
-  return.`// ${name}
+  return `// ${name}
 declare interface ErrorConfig {
   withStackTrace: boolean;
 }

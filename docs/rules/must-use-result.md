@@ -1,31 +1,39 @@
 # neverthrow/must-use-result
+
 > Not handling neverthrow result is a possible error because errors could remain unhandleds.
-> - ⭐️ This rule is included in `plugin:neverthrow/recommended` preset.
-
-> An example rule.
->
-> - ⭐️ This rule is included in `plugin:xxxx/recommended` preset.
-
-This is an example.
+> ⭐️ This rule is included in `plugin:neverthrow/recommended` preset.
 
 ## Rule Details
 
-This rule aimed at disallowing `example` identifiers.
+This rule aimed at disallowing `Results` without handling.
 
 Examples of **incorrect** code:
 
 ```js
-/*eslint template/example-rule: error */
+/*eslint neverthrow/must-use-result: error */
 
-var example = 1;
+// result without unwrapOr, match or any error handler
+const result = getResult();
+result.map(() => {})
+
+// result used just as parameter
+const v = getResult()
+externaFunction(v)
 ```
 
 Examples of **correct** code:
 
 ```js
-/*eslint template/example-rule: error */
+/*eslint neverthrow/must-use-result: error */
 
-var foo = 1;
+const result = getResult()
+
+result.unwrapOr()
+
+// after call a map
+const result = getResult()
+
+result.map(() => {}).unwrapOr('')
 ```
 
 ## Options

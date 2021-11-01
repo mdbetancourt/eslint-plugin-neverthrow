@@ -31,7 +31,7 @@ Below is an example of README.
 
 ---
 
-# eslint-plugin-neverthrow (template)
+# eslint-plugin-neverthrow
 
 <!--
 [![npm version](https://img.shields.io/npm/v/eslint-plugin-neverthrow.svg)](https://www.npmjs.com/package/eslint-plugin-neverthrow)
@@ -62,16 +62,16 @@ Write your config file such as `.eslintrc.yml`.
 
 ```yml
 plugins:
-  - xxxx
+  - neverthrow
 rules:
-  xxxx/example-rule: error
+  neverthrow/must-use-result: error
 ```
 
 See also [Configuring ESLint](https://eslint.org/docs/user-guide/configuring).
 
 ## Configs
 
-- `xxxx/recommended` ... enables the recommended rules.
+- `neverthrow/recommended` ... enables the recommended rules.
 
 ## Rules
 
