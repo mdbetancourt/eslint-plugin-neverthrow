@@ -1,5 +1,5 @@
-name: CI
-on: [push]
+name: PullRequestCheck
+on: [pull_request]
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -22,6 +22,14 @@ jobs:
           CI: true
       - name: Build
         run: npm run build
+  deploy:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [14.x]
+    needs: build
+    if: github.ref == 'refs/heads/master'
+    steps:
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

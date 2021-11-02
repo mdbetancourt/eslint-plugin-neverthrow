@@ -77,78 +77,75 @@ new TSESLint.RuleTester({
 }).run('must-use-result', rule, {
   valid: [
     injectResult('call unwrapOr', `
-    const result = getResult()
+      const result = getResult()
 
-    result.unwrapOr()
-    
+      result.unwrapOr()
     `),
     injectResult('call unwrapOr after some methods', `
-    const result = getResult()
+      const result = getResult()
 
-    result.map(() => {}).unwrapOr('')
-    
+      result.map(() => {}).unwrapOr('')
     `),
     injectResult('Call match', `
       const result = getResult()
       result.match(() => {}, () => {})
     `),
+    injectResult('Return result from function', `
+      function main() {
+        return getResult().map(() => {})
+      }
+    `),
     injectResult('Call a normal function', `
       getNormal()
-      
     `),
     `// Without definitions
       getNormal()
-      
     `
   ],
   invalid: [
     {
       code: injectResult('only assignment', `
-      const result = getResult()
-      
+        const result = getResult()
       `),
       errors: [{ messageId: MessageIds.MUST_USE }],
     },
     {
       code: injectResult('Call map for result', `
-      const result = getResult();
-      result.map(() => {})
+        const result = getResult();
+        result.map(() => {})
       `),
       errors: [{ messageId: MessageIds.MUST_USE },{ messageId: MessageIds.MUST_USE }],
     },
     {
       code: injectResult('only call', `
-      getResult()
-      
+        getResult()
       `),
       errors: [{ messageId: MessageIds.MUST_USE }],
     },
     {
       code: injectResult('call external function', `
-      const v = getResult()
-      externaFunction(v)
+        const v = getResult()
+        externaFunction(v)
       `),
       errors: [{ messageId: MessageIds.MUST_USE }],
     },
     {
       code: injectResult('made call from object', `
-      obj.get()
-      
+        obj.get()
       `),
       errors: [{ messageId: MessageIds.MUST_USE }],
     },
     {
       code: injectResult('none of the handle methods is called', `
-      getResult().unwrapOr
-      
+        getResult().unwrapOr
       `),
       errors: [{ messageId: MessageIds.MUST_USE }],
     },
     {
       code: injectResult('called inside a function', `
-      function main() {
-        getResult().map(() => {})
-      }
+        function main() {
+          getResult().map(() => {})
+        }
       `),
       errors: [{ messageId: MessageIds.MUST_USE },{ messageId: MessageIds.MUST_USE }],
     },
