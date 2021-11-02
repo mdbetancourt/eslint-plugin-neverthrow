@@ -23,16 +23,12 @@ const resultProperties = [
   'mapErr',
   'map',
   'andThen',
-  'andThen',
-  'andThen',
-  'orElse',
-  'orElse',
   'orElse',
   'match',
   'unwrapOr',
 ];
 
-const handledMethods = ['match', 'unwrapOr'];
+const handledMethods = ['match', 'unwrapOr', '_unsafeUnwrap'];
 
 // evalua dentro de la expresion si es result
 // si es result chequea que sea manejada en el la expresion
