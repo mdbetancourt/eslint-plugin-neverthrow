@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "target": "es2015",
-    "module": "commonjs",
+    "target": "ES2015",
+    "module": "CommonJS",
     "rootDir": "./",
     "outDir": "dist",
     "declaration": false,
@@ -15,6 +15,6 @@
     "esModuleInterop": true,
     "skipLibCheck": true
   },
-  "include": ["src", "tests", "scripts"],
-  "exclude": [".prettierrc.js"]
+  "include": ["src", "tests"],
+  "exclude": [".prettierrc.js", "node_modules"]
 }
