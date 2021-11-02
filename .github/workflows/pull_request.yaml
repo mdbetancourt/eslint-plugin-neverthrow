@@ -1,10 +1,7 @@
-name: Deploy
-on:
-  push:
-    branches:
-      - master
+name: PullRequestCheck
+on: [pull_request]
 jobs:
-  deploy:
+  test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -25,8 +22,3 @@ jobs:
           CI: true
       - name: Build
         run: npm run build
-      - name: Release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm run release
