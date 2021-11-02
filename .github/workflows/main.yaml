@@ -22,6 +22,10 @@ jobs:
           CI: true
       - name: Build
         run: npm run build
+      - uses: actions/upload-artifact@master
+        with:
+          name: package
+          path: .
   deploy:
     runs-on: ubuntu-latest
     strategy:
@@ -30,6 +34,10 @@ jobs:
     needs: build
     if: github.ref == 'refs/heads/master'
     steps:
+      - uses: actions/download-artifact@master
+        with:
+          name: package
+          path: .
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
