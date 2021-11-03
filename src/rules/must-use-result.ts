@@ -202,10 +202,12 @@ const rule: TSESLint.RuleModule<MessageIds, []> = {
 
   create(context) {
     const parserServices = context.parserServices;
-    const checker = parserServices?.program.getTypeChecker();
+    const checker = parserServices?.program?.getTypeChecker();
 
     if (!checker || !parserServices) {
-      throw Error('types not available');
+      throw Error(
+        'types not available, maybe you need set the parser to @typescript-eslint/parser'
+      );
     }
 
     return {
