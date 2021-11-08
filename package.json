@@ -35,11 +35,11 @@
   },
   "dependencies": {
     "@types/eslint-utils": "^3.0.0",
-    "@typescript-eslint/experimental-utils": "^4.20.0",
     "eslint-utils": "3.0.0",
     "tsutils": "3.21.0"
   },
   "devDependencies": {
+    "@typescript-eslint/experimental-utils": "^5.3.0",
     "@types/eslint": "^7.2.8",
     "@typescript-eslint/eslint-plugin": "^4.20.0",
     "@types/jest": "^26.0.22",

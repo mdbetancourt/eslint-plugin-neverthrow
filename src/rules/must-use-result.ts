@@ -1,20 +1,19 @@
 import { TypeChecker } from 'typescript';
 import { unionTypeParts } from 'tsutils';
 import { TSESTree } from '@typescript-eslint/types';
-import {
-  AST_NODE_TYPES,
+import type {
   TSESLint,
   ParserServices,
 } from '@typescript-eslint/experimental-utils';
 import { MessageIds } from '../utils';
 
-function matchAny(nodeTypes: AST_NODE_TYPES[]) {
+function matchAny(nodeTypes: string[]) {
   return `:matches(${nodeTypes.join(', ')})`;
 }
 const resultSelector = matchAny([
-  // AST_NODE_TYPES.Identifier,
-  AST_NODE_TYPES.CallExpression,
-  AST_NODE_TYPES.NewExpression,
+  // 'Identifier',
+  'CallExpression',
+  'NewExpression',
 ]);
 
 const resultProperties = [
@@ -59,41 +58,41 @@ function isResultLike(
 
 function findMemberName(node?: TSESTree.MemberExpression): string | null {
   if (!node) return null;
-  if (node.property.type !== AST_NODE_TYPES.Identifier) return null;
+  if (node.property.type !== 'Identifier') return null;
 
   return node.property.name;
 }
 
 function isMemberCalledFn(node?: TSESTree.MemberExpression): boolean {
-  if (node?.parent?.type !== AST_NODE_TYPES.CallExpression) return false;
+  if (node?.parent?.type !== 'CallExpression') return false;
   return node.parent.callee === node;
 }
 
 function isHandledResult(node: TSESTree.Node): boolean {
   const memberExpresion = node.parent;
-  if (memberExpresion?.type === AST_NODE_TYPES.MemberExpression) {
+  if (memberExpresion?.type === 'MemberExpression') {
     const methodName = findMemberName(memberExpresion);
     const methodIsCalled = isMemberCalledFn(memberExpresion);
     if (methodName && handledMethods.includes(methodName) && methodIsCalled) {
       return true;
     }
     const parent = node.parent?.parent; // search for chain method .map().handler
-    if (parent && parent?.type !== AST_NODE_TYPES.ExpressionStatement) {
+    if (parent && parent?.type !== 'ExpressionStatement') {
       return isHandledResult(parent);
     }
   }
   return false;
 }
-const endTransverse = [AST_NODE_TYPES.BlockStatement, AST_NODE_TYPES.Program];
+const endTransverse = ['BlockStatement', 'Program'];
 function getAssignation(
   checker: TypeChecker,
   parserServices: ParserServices,
   node: TSESTree.Node
 ): TSESTree.Identifier | undefined {
   if (
-    node.type === AST_NODE_TYPES.VariableDeclarator &&
+    node.type === 'VariableDeclarator' &&
     isResultLike(checker, parserServices, node.init) &&
-    node.id.type === AST_NODE_TYPES.Identifier
+    node.id.type === 'Identifier'
   ) {
     return node.id;
   }
@@ -108,13 +107,13 @@ function isReturned(
   parserServices: ParserServices,
   node: TSESTree.Node
 ): boolean {
-  if (node.type === AST_NODE_TYPES.ReturnStatement) {
+  if (node.type === 'ReturnStatement') {
     return true;
   }
-  if (node.type === AST_NODE_TYPES.BlockStatement) {
+  if (node.type === 'BlockStatement') {
     return false;
   }
-  if (node.type === AST_NODE_TYPES.Program) {
+  if (node.type === 'Program') {
     return false;
   }
   if (!node.parent) {
@@ -124,10 +123,10 @@ function isReturned(
 }
 
 const ignoreParents = [
-  AST_NODE_TYPES.ClassDeclaration,
-  AST_NODE_TYPES.FunctionDeclaration,
-  AST_NODE_TYPES.MethodDefinition,
-  AST_NODE_TYPES.ClassProperty,
+  'ClassDeclaration',
+  'FunctionDeclaration',
+  'MethodDefinition',
+  'ClassProperty',
 ];
 
 function processSelector(
@@ -188,7 +187,6 @@ const rule: TSESLint.RuleModule<MessageIds, []> = {
     docs: {
       description:
         'Not handling neverthrow result is a possible error because errors could remain unhandleds.',
-      category: 'Possible Errors',
       recommended: 'error',
       url: '',
     },

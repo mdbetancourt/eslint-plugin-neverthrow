@@ -12,7 +12,7 @@ module.exports = {
     project: ["./tsconfig.json"],
     tsconfigRootDir: __dirname,
   },
-  ignorePatterns: ['*.js', '.eslintrc.js', '.prettierrc.js', 'scripts'],
+  ignorePatterns: ['*.js', 'scripts'],
   overrides: [
     {
       files: 'scripts/**/*.ts',
