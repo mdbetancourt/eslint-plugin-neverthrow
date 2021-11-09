@@ -17,8 +17,6 @@ const resultSelector = matchAny([
 ]);
 
 const resultProperties = [
-  'isOk',
-  'isErr',
   'mapErr',
   'map',
   'andThen',
@@ -169,7 +167,7 @@ function processSelector(
           checker,
           parserServices,
           ref.identifier,
-          currentScope.block
+          reportAs
         )
       );
     }
