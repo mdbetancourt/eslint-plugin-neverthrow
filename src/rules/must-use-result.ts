@@ -105,6 +105,9 @@ function isReturned(
   parserServices: ParserServices,
   node: TSESTree.Node
 ): boolean {
+  if (node.type === 'ArrowFunctionExpression') {
+    return true;
+  }
   if (node.type === 'ReturnStatement') {
     return true;
   }

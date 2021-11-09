@@ -3,7 +3,8 @@ import rule from '../../src/rules/must-use-result';
 import { MessageIds } from '../../src/utils';
 
 function injectResult(name: string, text: string) {
-  return `// ${name}
+  return (
+    `// ${name}
 declare interface ErrorConfig {
   withStackTrace: boolean;
 }
@@ -70,84 +71,133 @@ declare function getNormal(): number
 const obj: { get: () => Result<string, Error> }
 
 ` + text
+  );
 }
 
 new TSESLint.RuleTester({
-  parser: require.resolve('@typescript-eslint/parser')
+  parser: require.resolve('@typescript-eslint/parser'),
 }).run('must-use-result', rule, {
   valid: [
-    injectResult('call unwrapOr', `
+    injectResult(
+      'call unwrapOr',
+      `
       const result = getResult()
 
       result.unwrapOr()
-    `),
-    injectResult('call unwrapOr after some methods', `
+    `
+    ),
+    injectResult(
+      'call unwrapOr after some methods',
+      `
       const result = getResult()
 
       result.map(() => {}).unwrapOr('')
-    `),
-    injectResult('Call match', `
+    `
+    ),
+    injectResult(
+      'Call match',
+      `
       const result = getResult()
       result.match(() => {}, () => {})
-    `),
-    injectResult('Return result from function', `
+    `
+    ),
+    injectResult(
+      'Return result from function',
+      `
       function main() {
         return getResult().map(() => {})
       }
-    `),
-    injectResult('Call a normal function', `
-      getNormal()
-    `),
-    `// Without definitions
+    `
+    ),
+    injectResult(
+      'Return result from an arrow function',
+      `
+      const main = () => getResult().map(() => {})
+    `
+    ),
+    injectResult(
+      'Call a normal function',
+      `
       getNormal()
     `
+    ),
+    `// Without definitions
+      getNormal()
+    `,
   ],
   invalid: [
     {
-      code: injectResult('only assignment', `
+      code: injectResult(
+        'only assignment',
+        `
         const result = getResult()
-      `),
+      `
+      ),
       errors: [{ messageId: MessageIds.MUST_USE }],
     },
     {
-      code: injectResult('Call map for result', `
+      code: injectResult(
+        'Call map for result',
+        `
         const result = getResult();
         result.map(() => {})
-      `),
-      errors: [{ messageId: MessageIds.MUST_USE },{ messageId: MessageIds.MUST_USE }],
+      `
+      ),
+      errors: [
+        { messageId: MessageIds.MUST_USE },
+        { messageId: MessageIds.MUST_USE },
+      ],
     },
     {
-      code: injectResult('only call', `
+      code: injectResult(
+        'only call',
+        `
         getResult()
-      `),
+      `
+      ),
       errors: [{ messageId: MessageIds.MUST_USE }],
     },
     {
-      code: injectResult('call external function', `
+      code: injectResult(
+        'call external function',
+        `
         const v = getResult()
         externaFunction(v)
-      `),
+      `
+      ),
       errors: [{ messageId: MessageIds.MUST_USE }],
     },
     {
-      code: injectResult('made call from object', `
+      code: injectResult(
+        'made call from object',
+        `
         obj.get()
-      `),
+      `
+      ),
       errors: [{ messageId: MessageIds.MUST_USE }],
     },
     {
-      code: injectResult('none of the handle methods is called', `
+      code: injectResult(
+        'none of the handle methods is called',
+        `
         getResult().unwrapOr
-      `),
+      `
+      ),
       errors: [{ messageId: MessageIds.MUST_USE }],
     },
     {
-      code: injectResult('called inside a function', `
+      code: injectResult(
+        'called inside a function',
+        `
         function main() {
           getResult().map(() => {})
         }
-      `),
-      errors: [{ messageId: MessageIds.MUST_USE },{ messageId: MessageIds.MUST_USE }],
+      `
+      ),
+      errors: [
+        { messageId: MessageIds.MUST_USE },
+        { messageId: MessageIds.MUST_USE },
+      ],
     },
   ],
 });
