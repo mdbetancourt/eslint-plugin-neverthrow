@@ -191,7 +191,7 @@ const rule: TSESLint.RuleModule<MessageIds, []> = {
     },
     messages: {
       mustUseResult:
-        'Result must be handle with either of match, unwrapOr or _unsafeUnwrap.',
+        'Result must be handled with either of match, unwrapOr or _unsafeUnwrap.',
     },
     schema: [],
     type: 'problem',
