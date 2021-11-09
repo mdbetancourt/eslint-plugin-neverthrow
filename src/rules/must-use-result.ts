@@ -188,6 +188,7 @@ const rule: TSESLint.RuleModule<MessageIds, []> = {
       description:
         'Not handling neverthrow result is a possible error because errors could remain unhandleds.',
       recommended: 'error',
+      category: 'Possible Errors',
       url: '',
     },
     messages: {
