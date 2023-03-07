@@ -25,7 +25,12 @@ const resultProperties = [
   'unwrapOr',
 ];
 
-const handledMethods = ['match', 'unwrapOr', '_unsafeUnwrap'];
+const handledMethods = [
+  'match',
+  'unwrapOr',
+  '_unsafeUnwrap',
+  '_unsafeUnwrapErr',
+];
 
 // evalua dentro de la expresion si es result
 // si es result chequea que sea manejada en el la expresion
@@ -194,7 +199,7 @@ const rule: TSESLint.RuleModule<MessageIds, []> = {
     },
     messages: {
       mustUseResult:
-        'Result must be handled with either of match, unwrapOr or _unsafeUnwrap.',
+        'Result must be handled with either of match, unwrapOr, _unsafeUnwrap or _unsafeUnwrapErr.',
     },
     schema: [],
     type: 'problem',

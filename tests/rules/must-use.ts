@@ -95,6 +95,22 @@ new TSESLint.RuleTester({
     `
     ),
     injectResult(
+      'call _unsafeUnwrap after some methods',
+      `
+      const result = getResult()
+
+      result.map(() => {})._unsafeUnwrap('')
+    `
+    ),
+    injectResult(
+      'call _unsafeUnwrapErr after some methods',
+      `
+      const result = getResult()
+
+      result.map(() => {})._unsafeUnwrapErr('')
+    `
+    ),
+    injectResult(
       'Call match',
       `
       const result = getResult()
