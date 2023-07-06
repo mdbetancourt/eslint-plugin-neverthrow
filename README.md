@@ -5,7 +5,7 @@
 
 ## Installation
 
-Use [npm](https://www.npmjs.com/) or a compatibility tool to install.
+Use [npm](https://www.npmjs.com/) or a compatible tool to install.
 
 ```bash
 npm install --save-dev eslint eslint-plugin-neverthrow @typescript-eslint/parser
@@ -51,7 +51,7 @@ See also [Configuring ESLint](https://eslint.org/docs/user-guide/configuring).
 
 | Rule ID                                                       | Description                                                                                |     |
 | :------------------------------------------------------------ | :----------------------------------------------------------------------------------------- | :-: |
-| [neverthrow/must-use-result](./docs/rules/must-use-result.md) | Not handling neverthrow result is a possible error because errors could remain unhandleds. | ⭐️ |
+| [neverthrow/must-use-result](./docs/rules/must-use-result.md) | Not handling neverthrow result is a possible error because errors could remain unhandled. | ⭐️ |
 
 <!--RULE_TABLE_END-->
 
