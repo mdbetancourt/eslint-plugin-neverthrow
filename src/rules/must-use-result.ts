@@ -212,6 +212,10 @@ const rule: TSESLint.RuleModule<MessageIds, []> = {
       [resultSelector](node: TSESTree.Node) {
         return processSelector(context, checker, parserServices, node);
       },
+
+      AwaitExpression(node: any) {
+        return processSelector(context, checker, parserServices, node);
+      },
     };
   },
 };
