@@ -130,12 +130,16 @@ const ignoreParents = [
   'ClassProperty',
 ];
 
+/**
+ * @returns A boolean indicates if the node is not handled.
+ */
 function processSelector(
   context: TSESLint.RuleContext<MessageIds, []>,
   checker: TypeChecker,
   parserServices: ParserServices,
   node: TSESTree.Node,
-  reportAs = node
+  reportAs = node,
+  isReferenceNode = false
 ): boolean {
   if (node.parent?.type.startsWith('TS')) {
     return false;
@@ -155,31 +159,25 @@ function processSelector(
     return false;
   }
 
-  const assignedTo = getAssignation(checker, parserServices, node);
-  const currentScope = context.getScope();
-
-  // Check if is assigned
-  if (assignedTo) {
-    const variable = currentScope.set.get(assignedTo.name);
-    const references =
-      variable?.references.filter((ref) => ref.identifier !== assignedTo) ?? [];
-    if (references.length > 0) {
-      return references.some((ref) =>
-        processSelector(
-          context,
-          checker,
-          parserServices,
-          ref.identifier,
-          reportAs
-        )
-      );
-    }
+  const anyHandled = handleAssignation(
+    context,
+    checker,
+    parserServices,
+    node,
+    node
+  );
+  if (anyHandled) {
+    return false;
   }
 
-  context.report({
-    node: reportAs,
-    messageId: MessageIds.MUST_USE,
-  });
+  // make sure not reporting to the same node mutiple times during recursing calls
+  if (!isReferenceNode) {
+    context.report({
+      node: reportAs,
+      messageId: MessageIds.MUST_USE,
+    });
+  }
+
   return true;
 }
 
@@ -219,3 +217,36 @@ const rule: TSESLint.RuleModule<MessageIds, []> = {
 };
 
 export = rule;
+
+function handleAssignation(
+  context: TSESLint.RuleContext<MessageIds, []>,
+  checker: TypeChecker,
+  parserServices: ParserServices,
+  node: TSESTree.Node,
+  reportAs: TSESTree.Node
+): boolean {
+  const assignedTo = getAssignation(checker, parserServices, node);
+  const currentScope = context.getScope();
+
+  // Check if is assigned to variables
+  if (assignedTo) {
+    const variable = currentScope.set.get(assignedTo.name);
+    const references =
+      variable?.references.filter((ref) => ref.identifier !== assignedTo) ?? [];
+
+    // check if any reference is handled by recursive calling
+    return references.some(
+      (ref) =>
+        !processSelector(
+          context,
+          checker,
+          parserServices,
+          ref.identifier,
+          reportAs,
+          true
+        )
+    );
+  }
+
+  return false;
+}
