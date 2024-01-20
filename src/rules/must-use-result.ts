@@ -159,13 +159,7 @@ function processSelector(
     return false;
   }
 
-  const anyHandled = handleAssignation(
-    context,
-    checker,
-    parserServices,
-    node,
-    node
-  );
+  const anyHandled = handleAssignation(context, checker, parserServices, node);
   if (anyHandled) {
     return false;
   }
@@ -227,7 +221,7 @@ function handleAssignation(
   checker: TypeChecker,
   parserServices: ParserServices,
   node: TSESTree.Node,
-  reportAs: TSESTree.Node
+  reportAs: TSESTree.Node = node
 ): boolean {
   const assignedTo = getAssignation(checker, parserServices, node);
   const currentScope = context.getScope();
