@@ -14,6 +14,7 @@ const resultSelector = matchAny([
   // 'Identifier',
   'CallExpression',
   'NewExpression',
+  'AwaitExpression',
 ]);
 
 const resultProperties = [
@@ -210,10 +211,6 @@ const rule: TSESLint.RuleModule<MessageIds, []> = {
 
     return {
       [resultSelector](node: TSESTree.Node) {
-        return processSelector(context, checker, parserServices, node);
-      },
-
-      AwaitExpression(node: TSESTree.Node) {
         return processSelector(context, checker, parserServices, node);
       },
     };
