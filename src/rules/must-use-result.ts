@@ -213,7 +213,7 @@ const rule: TSESLint.RuleModule<MessageIds, []> = {
         return processSelector(context, checker, parserServices, node);
       },
 
-      AwaitExpression(node: any) {
+      AwaitExpression(node: TSESTree.Node) {
         return processSelector(context, checker, parserServices, node);
       },
     };
@@ -237,6 +237,12 @@ function handleAssignation(
     const variable = currentScope.set.get(assignedTo.name);
     const references =
       variable?.references.filter((ref) => ref.identifier !== assignedTo) ?? [];
+
+    /**
+     * Try to mark the first assigned variable to be reported, if not, keep
+     * the original one.
+     */
+    reportAs = variable?.references[0].identifier ?? reportAs;
 
     // check if any reference is handled by recursive calling
     return references.some(
