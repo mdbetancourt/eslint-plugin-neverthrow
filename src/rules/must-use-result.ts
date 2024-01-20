@@ -159,7 +159,13 @@ function processSelector(
     return false;
   }
 
-  const anyHandled = handleAssignation(context, checker, parserServices, node);
+  const anyHandled = handleAssignation(
+    context,
+    checker,
+    parserServices,
+    node,
+    reportAs
+  );
   if (anyHandled) {
     return false;
   }
