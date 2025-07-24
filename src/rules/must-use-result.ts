@@ -27,13 +27,9 @@ const resultProperties = [
 ];
 
 const handledMethods = ['match', 'unwrapOr', '_unsafeUnwrap'];
+const checkedMethods = ['isOk', 'isErr'];
 
-// evalua dentro de la expresion si es result
-// si es result chequea que sea manejada en el la expresion
-// si no es manejada revisa si es asignada o usada como argumento para una funcion
-// si fue asignada sin manejar revisa todo el bloque de la variable por manejos
-// de resto fue manejada adecuadamente
-
+// evaluate if the node is result-like
 function isResultLike(
   checker: TypeChecker,
   parserServices: ParserServices,
@@ -68,6 +64,11 @@ function isMemberCalledFn(node?: TSESTree.MemberExpression): boolean {
 }
 
 function isHandledResult(node: TSESTree.Node): boolean {
+  // For AwaitExpression, check if the awaited result is handled
+  if (node.type === 'AwaitExpression') {
+    return isHandledResult(node.argument);
+  }
+
   const memberExpresion = node.parent;
   if (memberExpresion?.type === 'MemberExpression') {
     const methodName = findMemberName(memberExpresion);
@@ -82,6 +83,26 @@ function isHandledResult(node: TSESTree.Node): boolean {
   }
   return false;
 }
+
+const isCheckedResult = (node: TSESTree.Node): boolean => {
+  if (node.type === 'Identifier') {
+    if (node.parent?.type === 'MemberExpression') {
+      const propertyName =
+        node.parent.property.type === 'Identifier'
+          ? node.parent.property.name
+          : null;
+      const parentIsCalledExpression =
+        node.parent.parent?.type === 'CallExpression';
+      return (
+        !!propertyName &&
+        checkedMethods.includes(propertyName) &&
+        parentIsCalledExpression
+      );
+    }
+  }
+  return false;
+};
+
 const endTransverse = ['BlockStatement', 'Program'];
 function getAssignation(
   checker: TypeChecker,
@@ -118,6 +139,13 @@ function isReturned(
   if (node.type === 'Program') {
     return false;
   }
+  if (node.type === 'AwaitExpression') {
+    // For AwaitExpression, check if the parent is returned
+    if (!node.parent) {
+      return false;
+    }
+    return isReturned(checker, parserServices, node.parent);
+  }
   if (!node.parent) {
     return false;
   }
@@ -148,14 +176,35 @@ function processSelector(
   if (node.parent && ignoreParents.includes(node.parent.type)) {
     return false;
   }
-  if (!isResultLike(checker, parserServices, node)) {
+
+  // For AwaitExpression, check if the argument is result-like
+  if (node.type === 'AwaitExpression') {
+    if (!isResultLike(checker, parserServices, node.argument)) {
+      return false;
+    }
+  } else {
+    // For other node types, check if the node itself is result-like
+    if (!isResultLike(checker, parserServices, node)) {
+      return false;
+    }
+  }
+
+  // Skip CallExpression nodes that are inside AwaitExpression to avoid duplicate reporting
+  if (
+    node.type === 'CallExpression' &&
+    node.parent?.type === 'AwaitExpression'
+  ) {
     return false;
   }
 
   if (isHandledResult(node)) {
     return false;
   }
-  // return getResult()
+
+  if (isCheckedResult(node)) {
+    return false;
+  }
+
   if (isReturned(checker, parserServices, node)) {
     return false;
   }
