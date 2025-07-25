@@ -133,6 +133,24 @@ new TSESLint.RuleTester({
       res2.unwrapOr(5);
       `
     ),
+    injectResult(
+      'Call isOk or isErr',
+      `
+      const result = getResult()
+      if (result.isOk()) {
+        return ok()
+      }
+      `
+    ),
+    injectResult(
+      'Call isOk or isErr',
+      `
+      const result = getResult()
+      if (!result.isErr()) {
+        return ok()
+      }
+      `
+    ),
   ],
   invalid: [
     {
@@ -212,11 +230,11 @@ new TSESLint.RuleTester({
       code: injectResult(
         'Await Promise is not handled properly',
         `
-        const res = await getRes(); // case1
-        const res1 = await getRes(); // case2
+        const res = await getResult();
+        const res1 = await getResult();
         res1.unwrapOr;
         
-        await getRes(); // case3
+        await getResult();
         `
       ),
       errors: [
@@ -224,6 +242,18 @@ new TSESLint.RuleTester({
         { messageId: MessageIds.MUST_USE },
         { messageId: MessageIds.MUST_USE },
       ],
+    },
+    {
+      code: injectResult(
+        'Await Promise is not handled properly',
+        `
+        const res = getResult();
+        if (res.isOk) {
+          return ok()
+        }
+        `
+      ),
+      errors: [{ messageId: MessageIds.MUST_USE }],
     },
   ],
 });
